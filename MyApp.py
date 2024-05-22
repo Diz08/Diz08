@@ -4,6 +4,7 @@ from scipy.io.wavfile import write
 import tempfile
 import os
 
+
 # Function to generate a sound wave and give it a frequency
 def generate_sine_wave(freq, duration, sample_rate=44100, amplitude=0.5):
     t = np.linspace(0, duration, int(sample_rate * duration), endpoint=False)
@@ -12,9 +13,12 @@ def generate_sine_wave(freq, duration, sample_rate=44100, amplitude=0.5):
 
 # Function to save the generated wave as temporary file
 def save_wave(wave, sample_rate=44100): 
-    temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.wav')
+   with tempfile.NamedTemporaryFile(delete=False, suffix='.wav') as temp_file:
     write(temp_file.name, sample_rate, wave)
-    return temp_file
+    temp_file.seek(0)
+    wave_data = temp_file.read()
+   os.remove(temp_file.name)
+   return wave_data 
 
 # Function to play the generated sound
 def play_sound(note_freq):
